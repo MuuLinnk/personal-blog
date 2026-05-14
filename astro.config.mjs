@@ -4,7 +4,7 @@ import mdx from '@astrojs/mdx';
 
 export default defineConfig({
   integrations: [tailwind(), mdx()],
-  site: 'https://your-site.vercel.app',
+  site: 'https://personal-blog-unai.vercel.app',
   markdown: {
     shikiConfig: {
       theme: 'github-dark',
