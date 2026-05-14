@@ -1,0 +1,20 @@
+---
+interface TagItem {
+  name: string;
+  count: number;
+}
+
+const { tags = [] } = Astro.props as { tags: TagItem[] };
+---
+
+<div class="flex flex-wrap gap-2">
+  {tags.map((tag) => (
+    <a
+      href={`/tags/${tag.name}`}
+      class="px-3 py-1.5 rounded-full text-sm bg-github-card border border-github-border hover:border-github-accent hover:text-github-accent transition-colors"
+    >
+      {tag.name}
+      <span class="text-github-text/50 ml-1">({tag.count})</span>
+    </a>
+  ))}
+</div>

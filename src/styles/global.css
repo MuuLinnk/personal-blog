@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-github-bg text-github-text antialiased;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Markdown code blocks */
+pre {
+  @apply rounded-lg border border-github-border;
+}
+
+/* Inline code */
+:not(pre) > code {
+  @apply bg-github-card px-1.5 py-0.5 rounded text-sm text-github-accent;
+}
+
+/* TOC */
+.toc a {
+  @apply text-github-text/70 hover:text-github-accent transition-colors no-underline;
+}
+
+.toc a[aria-current="true"] {
+  @apply text-github-accent font-medium;
+}
+
+/* Selection */
+::selection {
+  @apply bg-github-accent/30 text-github-heading;
+}

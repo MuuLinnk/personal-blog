@@ -1,0 +1,49 @@
+---
+import { SITE } from '../consts';
+
+const navLinks = [
+  { href: '/', label: '首页' },
+  { href: '/tags', label: '标签' },
+  { href: '/archive', label: '归档' },
+  { href: '/about', label: '关于' },
+];
+
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) => {
+  if (href === '/') return currentPath === '/';
+  return currentPath.startsWith(href);
+};
+---
+
+<header class="border-b border-github-border bg-github-bg/80 backdrop-blur-sm sticky top-0 z-50">
+  <nav class="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+    <a href="/" class="text-github-heading font-bold text-lg hover:text-github-accent transition-colors">
+      {SITE.title}
+    </a>
+    <div class="flex items-center gap-1">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class={`px-3 py-1.5 rounded-md text-sm transition-colors ${
+            isActive(link.href)
+              ? 'bg-github-card text-github-accent'
+              : 'text-github-text hover:text-github-heading hover:bg-github-card'
+          }`}
+        >
+          {link.label}
+        </a>
+      ))}
+      <a
+        href="/rss.xml"
+        class="px-2 py-1.5 text-github-text/60 hover:text-github-heading transition-colors"
+        title="RSS 订阅"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 11a9 9 0 0 1 9 9" />
+          <path d="M4 4a16 16 0 0 1 16 16" />
+          <circle cx="5" cy="19" r="1" />
+        </svg>
+      </a>
+    </div>
+  </nav>
+</header>

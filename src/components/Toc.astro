@@ -1,0 +1,26 @@
+---
+interface TocHeading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+const { headings = [] } = Astro.props as { headings: TocHeading[] };
+---
+
+{
+  headings.length > 0 && (
+    <nav class="toc hidden lg:block sticky top-20">
+      <h2 class="text-sm font-semibold text-github-heading mb-3">目录</h2>
+      <ul class="space-y-1.5 text-sm">
+        {headings.map((heading) => (
+          <li style={`padding-left: ${(heading.depth - 1) * 12}px`}>
+            <a href={`#${heading.slug}`} class="block">
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}

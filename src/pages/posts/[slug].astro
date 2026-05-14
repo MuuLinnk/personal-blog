@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Toc from '../../components/Toc.astro';
+import { getCollection } from 'astro:content';
+import { formatDate } from '../../utils';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post) => ({
+    params: { slug: post.data.slug || post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await post.render();
+const { title, date, description, tags = [] } = post.data;
+
+const allPosts = await getCollection('posts');
+const allSorted = allPosts
+  .map((p) => ({
+    title: p.data.title,
+    slug: p.data.slug || p.id,
+    date: p.data.date,
+  }))
+  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+const currentIndex = allSorted.findIndex((p) => p.slug === Astro.params.slug);
+const prevPost = currentIndex < allSorted.length - 1 ? allSorted[currentIndex + 1] : null;
+const nextPost = currentIndex > 0 ? allSorted[currentIndex - 1] : null;
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="lg:grid lg:grid-cols-[1fr_200px] lg:gap-10">
+    <div class="min-w-0">
+      <header class="mb-8">
+        <h1 class="text-3xl font-bold text-github-heading">{title}</h1>
+        <div class="flex items-center gap-3 text-sm text-github-text/50 mt-3">
+          <time>{formatDate(date)}</time>
+        </div>
+        {tags.length > 0 && (
+          <div class="flex flex-wrap gap-2 mt-3">
+            {tags.map((tag: string) => (
+              <a
+                href={`/tags/${tag}`}
+                class="text-xs px-2 py-0.5 rounded-full bg-github-accent/10 text-github-accent hover:bg-github-accent/20 transition-colors"
+              >
+                #{tag}
+              </a>
+            ))}
+          </div>
+        )}
+      </header>
+
+      <div
+        class="prose prose-invert max-w-none
+          prose-headings:text-github-heading
+          prose-p:text-github-text/90
+          prose-a:text-github-accent prose-a:no-underline hover:prose-a:underline
+          prose-code:text-github-accent
+          prose-pre:bg-github-card prose-pre:border prose-pre:border-github-border
+          prose-img:rounded-lg
+          prose-blockquote:border-l-github-accent prose-blockquote:text-github-text/70
+          prose-strong:text-github-heading
+          prose-li:text-github-text/90
+          prose-hr:border-github-border
+        "
+      >
+        <Content />
+      </div>
+
+      <nav class="mt-12 pt-6 border-t border-github-border flex justify-between text-sm">
+        <div>
+          {prevPost && (
+            <a href={`/posts/${prevPost.slug}`} class="text-github-text/60 hover:text-github-accent transition-colors">
+              &larr; {prevPost.title}
+            </a>
+          )}
+        </div>
+        <div>
+          {nextPost && (
+            <a href={`/posts/${nextPost.slug}`} class="text-github-text/60 hover:text-github-accent transition-colors">
+              {nextPost.title} &rarr;
+            </a>
+          )}
+        </div>
+      </nav>
+    </div>
+
+    <aside>
+      <Toc headings={headings} />
+    </aside>
+  </article>
+</BaseLayout>

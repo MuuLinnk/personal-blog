@@ -1,0 +1,36 @@
+---
+export interface Props {
+  title: string;
+  slug: string;
+  date: string;
+  description?: string;
+  tags?: string[];
+  readingTime?: string;
+}
+
+const { title, slug, date, description, tags = [], readingTime } = Astro.props;
+---
+
+<article class="border border-github-border rounded-lg p-6 hover:border-github-accent/30 transition-colors bg-github-card/50">
+  <a href={`/posts/${slug}`} class="no-underline block">
+    <time class="text-xs text-github-text/50">{date}</time>
+    <h2 class="text-xl font-semibold text-github-heading mt-1 mb-2 hover:text-github-accent transition-colors">
+      {title}
+    </h2>
+    {description && (
+      <p class="text-sm text-github-text/70 leading-relaxed line-clamp-2">{description}</p>
+    )}
+  </a>
+  <div class="flex items-center justify-between mt-3">
+    <div class="flex flex-wrap gap-2">
+      {tags.map((tag) => (
+        <a href={`/tags/${tag}`} class="text-xs px-2 py-0.5 rounded-full bg-github-accent/10 text-github-accent hover:bg-github-accent/20 transition-colors">
+          #{tag}
+        </a>
+      ))}
+    </div>
+    {readingTime && (
+      <span class="text-xs text-github-text/50 shrink-0">阅读 {readingTime}</span>
+    )}
+  </div>
+</article>

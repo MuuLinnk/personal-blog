@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TagCloud from '../components/TagCloud.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts');
+
+const tagMap = new Map<string, number>();
+allPosts.forEach((post) => {
+  post.data.tags.forEach((tag: string) => {
+    tagMap.set(tag, (tagMap.get(tag) || 0) + 1);
+  });
+});
+
+const tags = Array.from(tagMap.entries())
+  .map(([name, count]) => ({ name, count }))
+  .sort((a, b) => b.count - a.count);
+---
+
+<BaseLayout title="标签">
+  <h1 class="text-3xl font-bold text-github-heading mb-2">标签</h1>
+  <p class="text-github-text/50 mb-8">{tags.length} 个标签</p>
+  <TagCloud tags={tags} />
+
+  {tags.length === 0 && (
+    <div class="text-center py-16 text-github-text/50">
+      <p>还没有标签，发布文章后会自动生成</p>
+    </div>
+  )}
+</BaseLayout>

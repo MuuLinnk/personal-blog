@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import { SITE } from '../consts';
+import { getCollection } from 'astro:content';
+import { formatDate } from '../utils';
+
+const allPosts = await getCollection('posts');
+
+const posts = allPosts
+  .map((post) => ({
+    title: post.data.title,
+    slug: post.data.slug || post.id,
+    date: formatDate(post.data.date),
+    description: post.data.description,
+    tags: post.data.tags,
+  }))
+  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+---
+
+<BaseLayout title="首页">
+  <section class="mb-10">
+    <h1 class="text-3xl font-bold text-github-heading">{SITE.title}</h1>
+    <p class="text-github-text/70 mt-2 leading-relaxed">{SITE.description}</p>
+  </section>
+
+  <div class="space-y-4">
+    {posts.map((post) => (
+      <PostCard {...post} />
+    ))}
+  </div>
+
+  {posts.length === 0 && (
+    <div class="text-center py-16 text-github-text/50">
+      <p class="text-lg">还没有文章</p>
+      <p class="text-sm mt-2">登录后台开始写作吧</p>
+    </div>
+  )}
+</BaseLayout>
